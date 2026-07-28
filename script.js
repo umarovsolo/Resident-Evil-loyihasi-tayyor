@@ -266,3 +266,23 @@ window.onclick = function(event) {
         modal.style.display = 'none';
     }
 };
+
+
+const searchInput = document.getElementById('searchInput');
+
+searchInput.addEventListener('input', (e) => {
+    const searchText = e.target.value.toLowerCase().trim();
+    // Kartochkalar class nomi sizda ".card" yoki shunga o'xshash bo'lsa:
+    const cards = document.querySelectorAll('.card'); 
+
+    cards.forEach(card => {
+        // Personaj ismi turgan elementni topamiz (masalan, h3)
+        const name = card.querySelector('h3').textContent.toLowerCase();
+
+        if (name.includes(searchText)) {
+            card.style.display = 'flex'; // Agar mos kelsa ko'rsatiladi
+        } else {
+            card.style.display = 'none'; // Mos kelmasa berkitiladi
+        }
+    });
+});

@@ -10,6 +10,9 @@
 
 <body>
     <h1 class="main-title">Resident Evil Personajlari</h1>
+    <div class="search-container">
+        <input type="text" id="searchInput" placeholder="Personaj nomini qidiring (masalan: Leon)...">
+    </div>
     <div id="characterList" class="character-grid"></div>
     <!-- Modal oyna (To'liq ma'lumotni ko'rsatish uchun) -->
     <div id="characterModal" class="modal">
@@ -17,7 +20,7 @@
             <span class="close-btn" onclick="closeModal()">&times;</span>
             <div id="modalBody"></div>
         </div>
-    </div>  
+    </div>
 
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="script.js"></script>

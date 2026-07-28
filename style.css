@@ -210,3 +210,31 @@ h1, h2, h3 {
     letter-spacing: 2px;
     text-shadow: 0 0 10px rgba(255, 51, 51, 0.5); /* Yengil qizil yog'du effect */
 }
+
+.search-container {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 30px;
+}
+
+#searchInput {
+    width: 90%;
+    max-width: 400px;
+    padding: 12px 20px;
+    background-color: #1a1a1a;
+    border: 2px solid #ff3333;
+    border-radius: 8px;
+    color: #ffffff;
+    font-size: 16px;
+    outline: none;
+    transition: all 0.3s ease;
+}
+
+#searchInput::placeholder {
+    color: #888888;
+}
+
+#searchInput:focus {
+    box-shadow: 0 0 12px rgba(255, 51, 51, 0.8);
+    border-color: #ff4d4d;
+}
