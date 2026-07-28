@@ -238,3 +238,17 @@ h1, h2, h3 {
     box-shadow: 0 0 12px rgba(255, 51, 51, 0.8);
     border-color: #ff4d4d;
 }
+.character-card {
+    background-color: #161616;
+    border: 1px solid #330000;
+    border-radius: 8px;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.character-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 5px 15px rgba(255, 0, 0, 0.3);
+}

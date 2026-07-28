@@ -3,7 +3,9 @@ const SUPABASE_ANON_KEY = 'sb_publishable_KipXxEEDmDOnN_5lkLlP4w_yknnktkv';
 
 const db = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-// Admin panelda formani yuborish kodi
+let charactersData = []; // Barcha personajlarni xotirada saqlash uchun
+
+// ==================== 1. ADMIN PANEL: FORMA YUBORISH ====================
 const form = document.getElementById('characterForm');
 
 if (form) {
@@ -17,7 +19,7 @@ if (form) {
         
         let imageUrl = '';
 
-        // Agar rasm tanlangan bo'lsa, uni Supabase Storage'ga yuklaymiz
+        // Agar rasm tanlangan bo'lsa, Supabase Storage'ga yuklaymiz
         if (imageFileInput.files.length > 0) {
             const file = imageFileInput.files[0];
             const fileExt = file.name.split('.').pop();
@@ -50,42 +52,12 @@ if (form) {
         } else {
             alert('Personaj muvaffaqiyatli qo\'shildi!');
             form.reset();
-            loadAdminCharacters(); // Qo'shilgach ro'yxatni yangilash
+            loadAdminCharacters();
         }
     });
 }
 
-// Bazadan ma'lumotlarni o'qib, ekranga chiqaruvchi funksiya (Asosiy sahifa uchun)
-async function renderCharacters() {
-    const container = document.getElementById('characterList');
-    if (!container) return; 
-
-    const { data, error } = await db.from('characters').select('*');
-
-    if (error) {
-        console.error('Oqib olishda xatolik:', error);
-        return;
-    }
-
-    container.innerHTML = ''; 
-
-    data.forEach(char => {
-        const card = document.createElement('div');
-        card.classList.add('character-card');
-        card.innerHTML = `
-            <img src="${char.image_url}" alt="${char.name}">
-            <h3>${char.name}</h3>
-            <p><b>Rol:</b> ${char.role}</p>
-            <p>${char.bio}</p>
-        `;
-        container.appendChild(card);
-    });
-}
-
-// Sahifa ochilganda asosiy sahifa uchun ishga tushirish
-renderCharacters();
-
-// Personajni o'chirish funksiyasi (db ishlatildi)
+// ==================== 2. ADMIN PANEL: O'CHIRISH VA RO'YXAT ====================
 async function deleteCharacter(id) {
     if (!confirm("Haqiqatan ham bu personajni o'chirmoqchimisiz?")) return;
 
@@ -99,18 +71,15 @@ async function deleteCharacter(id) {
         alert('Xatolik yuz berdi: ' + error.message);
     } else {
         alert('Personaj muvaffaqiyatli o\'chirildi!');
-        loadAdminCharacters(); // Ro'yxatni yangilash
+        loadAdminCharacters();
     }
 }
 
-// Admin panelda mavjud personajlarni chiqarish funksiyasi
 async function loadAdminCharacters() {
     const listContainer = document.getElementById('adminCharacterList');
     if (!listContainer) return;
 
-    const { data, error } = await db
-        .from('characters')
-        .select('*');
+    const { data, error } = await db.from('characters').select('*');
 
     if (error) {
         console.error('Xatolik:', error);
@@ -136,12 +105,7 @@ async function loadAdminCharacters() {
     });
 }
 
-// Sahifa yuklanganda admin ro'yxatini chaqirish
-document.addEventListener('DOMContentLoaded', () => {
-    loadAdminCharacters();
-});
-
-// Asosiy sahifada personajlarni chiqarish
+// ==================== 3. ASOSIY SAHIFA: KARTOCHKALARNI CHIQARISH ====================
 async function renderCharacters() {
     const container = document.getElementById('characterList');
     if (!container) return; 
@@ -153,72 +117,7 @@ async function renderCharacters() {
         return;
     }
 
-    container.innerHTML = ''; 
-
-    data.forEach(char => {
-        const card = document.createElement('div');
-        card.classList.add('character-card');
-        
-        // Modal uchun ma'lumotlarni xavfsiz JSON shaklida saqlash
-        const charData = encodeURIComponent(JSON.stringify(char));
-
-        card.innerHTML = `
-            <img src="${char.image_url}" alt="${char.name}" style="width: 100%; height: 200px; object-fit: cover; border-radius: 6px;">
-            <h3 style="color: #ff3333; margin-top: 10px;">${char.name}</h3>
-            <p><b>Rol:</b> ${char.role}</p>
-            <p class="bio-preview">${char.bio}</p>
-            <button onclick="openModal('${charData}')" style="background: #cc0000; color: white; border: none; padding: 8px 15px; border-radius: 5px; cursor: pointer; width: 100%; margin-top: 10px; font-weight: bold;">Batafsil o'qish</button>
-        `;
-        container.appendChild(card);
-    });
-}
-
-// Modalni ochish funksiyasi
-function openModal(charDataString) {
-    const char = JSON.parse(decodeURIComponent(charDataString));
-    const modal = document.getElementById('characterModal');
-    const modalBody = document.getElementById('modalBody');
-
-    modalBody.innerHTML = `
-        <img src="${char.image_url}" alt="${char.name}" style="width: 100%; max-height: 250px; object-fit: cover; border-radius: 8px; border: 1px solid #330000;">
-        <h2 style="color: #ff3333; margin-top: 15px; text-align: center;">${char.name}</h2>
-        <p style="color: #ff4d4d; text-align: center;"><b>Rol:</b> ${char.role}</p>
-        <hr style="border-color: #330000; margin: 15px 0;">
-        <p style="line-height: 1.6; color: #cccccc; white-space: pre-wrap;">${char.bio}</p>
-    `;
-
-    modal.style.display = 'flex';
-}
-
-// Modalni yopish funksiyasi
-function closeModal() {
-    const modal = document.getElementById('characterModal');
-    modal.style.display = 'none';
-}
-
-// Modal tashqarisiga bosilganda ham yopilishi uchun
-window.onclick = function(event) {
-    const modal = document.getElementById('characterModal');
-    if (event.target === modal) {
-        modal.style.display = 'none';
-    }
-};
-
-let charactersData = []; // Barcha personajlarni saqlab turish uchun
-
-// Asosiy sahifada personajlarni chiqarish
-async function renderCharacters() {
-    const container = document.getElementById('characterList');
-    if (!container) return; 
-
-    const { data, error } = await db.from('characters').select('*');
-
-    if (error) {
-        console.error('Oqib olishda xatolik:', error);
-        return;
-    }
-
-    charactersData = data; // Ma'lumotlarni saqlab qo'yamiz
+    charactersData = data; // Qidiruv va Modal uchun global massivga saqlaymiz
     container.innerHTML = ''; 
 
     data.forEach((char) => {
@@ -226,23 +125,25 @@ async function renderCharacters() {
         card.classList.add('character-card');
 
         card.innerHTML = `
-            <img src="${char.image_url}" alt="${char.name}">
-            <h3>${char.name}</h3>
+            <img src="${char.image_url}" alt="${char.name}" style="width: 100%; height: 200px; object-fit: cover; border-radius: 6px;">
+            <h3 style="color: #ff3333; margin-top: 10px;">${char.name}</h3>
             <p class="role-text"><b>Rol:</b> ${char.role}</p>
-            <p class="bio-text">${char.bio}</p>
-            <button onclick="openModal('${char.id}')">Batafsil o'qish</button>
+            <p class="bio-preview" style="color: #aaa; font-size: 14px;">${char.bio}</p>
+            <button onclick="openModal('${char.id}')" style="background: #cc0000; color: white; border: none; padding: 8px 15px; border-radius: 5px; cursor: pointer; width: 100%; margin-top: 10px; font-weight: bold;">Batafsil o'qish</button>
         `;
         container.appendChild(card);
     });
 }
 
-// Modalni ochish funksiyasi (ID orqali xavfsiz qidirish)
+// ==================== 4. MODAL OYNASI MANTIQI ====================
 function openModal(id) {
     const char = charactersData.find(c => String(c.id) === String(id));
     if (!char) return;
 
     const modal = document.getElementById('characterModal');
     const modalBody = document.getElementById('modalBody');
+
+    if (!modal || !modalBody) return;
 
     modalBody.innerHTML = `
         <img src="${char.image_url}" alt="${char.name}" style="width: 100%; max-height: 250px; object-fit: cover; border-radius: 8px; border: 1px solid #330000;">
@@ -267,22 +168,65 @@ window.onclick = function(event) {
     }
 };
 
-
+// ==================== 5. REAL-TIME QIDIRUV MANTIQI ====================
 const searchInput = document.getElementById('searchInput');
 
-searchInput.addEventListener('input', (e) => {
-    const searchText = e.target.value.toLowerCase().trim();
-    // Kartochkalar class nomi sizda ".card" yoki shunga o'xshash bo'lsa:
-    const cards = document.querySelectorAll('.card'); 
+if (searchInput) {
+    searchInput.addEventListener('input', (e) => {
+        const searchText = e.target.value.toLowerCase().trim();
+        const cards = document.querySelectorAll('.character-card'); // To'g'ri klass tanlandi
 
-    cards.forEach(card => {
-        // Personaj ismi turgan elementni topamiz (masalan, h3)
-        const name = card.querySelector('h3').textContent.toLowerCase();
+        cards.forEach(card => {
+            const nameElement = card.querySelector('h3');
+            
+            if (nameElement) {
+                const name = nameElement.textContent.toLowerCase();
 
-        if (name.includes(searchText)) {
-            card.style.display = 'flex'; // Agar mos kelsa ko'rsatiladi
-        } else {
-            card.style.display = 'none'; // Mos kelmasa berkitiladi
-        }
+                if (name.includes(searchText)) {
+                    card.style.display = ''; // Ko'rsatiladi
+                } else {
+                    card.style.display = 'none'; // Berkitiladi
+                }
+            }
+        });
     });
+}
+
+// ==================== 6. SAHIFA YUKLANIShI ====================
+document.addEventListener('DOMContentLoaded', () => {
+    loadAdminCharacters();
+    renderCharacters();
 });
+
+// Asosiy sahifada personajlarni chiqarish (Tartiblangan variant)
+async function renderCharacters() {
+    const container = document.getElementById('characterList');
+    if (!container) return; 
+
+    const { data, error } = await db.from('characters').select('*');
+
+    if (error) {
+        console.error('Oqib olishda xatolik:', error);
+        return;
+    }
+
+    charactersData = data; 
+    container.innerHTML = ''; 
+
+    data.forEach((char) => {
+        const card = document.createElement('div');
+        card.classList.add('character-card');
+
+        card.innerHTML = `
+            <img src="${char.image_url}" alt="${char.name}" style="width: 100%; height: 220px; object-fit: cover; border-radius: 6px 6px 0 0;">
+            <div style="padding: 15px; display: flex; flex-direction: column; justify-content: space-between; flex-grow: 1;">
+                <div>
+                    <h3 style="color: #ff3333; margin: 0 0 8px 0; font-size: 18px;">${char.name}</h3>
+                    <p style="color: #cccccc; font-size: 14px; margin: 0 0 12px 0;"><b>Rol:</b> ${char.role || 'Noma\'lum'}</p>
+                </div>
+                <button onclick="openModal('${char.id}')" style="background: #cc0000; color: white; border: none; padding: 10px; border-radius: 5px; cursor: pointer; width: 100%; font-weight: bold; transition: 0.2s;">Batafsil o'qish</button>
+            </div>
+        `;
+        container.appendChild(card);
+    });
+}
