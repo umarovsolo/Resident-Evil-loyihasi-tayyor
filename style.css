@@ -1,0 +1,201 @@
+/* 1. Umumiy sahifa va fontlar */
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: #0d0d0d;
+    color: #e0e0e0;
+    margin: 0;
+    padding: 20px;
+}
+
+/* 2. Sarlavhalar */
+h1, h2, h3 {
+    color: #ff3333;
+    text-align: center;
+    text-shadow: 0 0 10px rgba(255, 0, 0, 0.5);
+}
+
+/* 3. Grid Konteyner */
+#characterList {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+    gap: 20px;
+    padding: 20px;
+    max-width: 1200px;
+    margin: 0 auto;
+    align-items: stretch; /* Kartochkalarni bir xil balandlikka keltirish */
+}
+
+/* 4. Kartochkalar */
+.character-card {
+    background: #121212;
+    border: 1px solid #330000;
+    border-radius: 12px;
+    padding: 15px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between; /* Tugmani har doim pastda ushlaydi */
+    box-shadow: 0 4px 15px rgba(255, 0, 0, 0.15);
+    transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
+    box-sizing: border-box;
+    height: 100%;
+}
+
+.character-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 25px rgba(255, 0, 0, 0.35);
+    border-color: #ff1a1a;
+}
+
+.character-card img {
+    width: 100%;
+    height: 200px;
+    object-fit: cover;
+    border-radius: 6px;
+    border-bottom: 2px solid #330000;
+}
+
+.character-card h3 {
+    margin: 12px 0 8px 0;
+    font-size: 18px;
+    color: #ff4d4d;
+    text-align: left;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+/* Matnlar uchun aniq qator cheklovi va fixed balandlik */
+.role-text {
+    font-size: 13px;
+    color: #cccccc;
+    margin: 0 0 8px 0;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    height: 38px;
+}
+
+.bio-text {
+    font-size: 13px;
+    color: #999999;
+    margin: 0 0 15px 0;
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    height: 55px;
+}
+
+/* Kartochka tugmasi */
+.character-card button {
+    background: #cc0000;
+    color: white;
+    border: none;
+    padding: 10px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: bold;
+    width: 100%;
+    transition: background-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.character-card button:hover {
+    background-color: #ff1a1a;
+    box-shadow: 0 0 12px rgba(255, 0, 0, 0.5);
+}
+
+/* 5. Modal oyna (Pop-up) */
+.modal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.85);
+    z-index: 1000;
+    justify-content: center;
+    align-items: center;
+    backdrop-filter: blur(5px);
+}
+
+.modal-content {
+    background: #121212;
+    border: 2px solid #cc0000;
+    box-shadow: 0 0 25px rgba(204, 0, 0, 0.4);
+    padding: 25px;
+    width: 90%;
+    max-width: 500px;
+    border-radius: 10px;
+    color: #e0e0e0;
+    position: relative;
+    max-height: 80vh;
+    overflow-y: auto;
+}
+
+.close-btn {
+    position: absolute;
+    top: 10px;
+    right: 15px;
+    color: #ff3333;
+    font-size: 28px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.close-btn:hover {
+    color: #ffffff;
+}
+
+/* 6. Admin Formasi */
+#characterForm {
+    background: #161616;
+    border: 1px solid #330000;
+    max-width: 500px;
+    margin: 30px auto;
+    padding: 30px;
+    border-radius: 12px;
+    box-shadow: 0 4px 20px rgba(255, 0, 0, 0.15);
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+#characterForm input[type="text"],
+#characterForm textarea,
+#characterForm input[type="file"] {
+    width: 100%;
+    padding: 12px;
+    background: #0d0d0d;
+    border: 1px solid #440000;
+    color: #ffffff;
+    border-radius: 8px;
+    font-size: 14px;
+    outline: none;
+    box-sizing: border-box;
+    transition: border-color 0.3s;
+}
+
+#characterForm input:focus,
+#characterForm textarea:focus {
+    border-color: #ff1a1a;
+    box-shadow: 0 0 8px rgba(255, 0, 0, 0.4);
+}
+
+#characterForm button {
+    background-color: #cc0000;
+    color: white;
+    border: none;
+    padding: 12px;
+    border-radius: 8px;
+    font-size: 16px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background-color 0.3s, box-shadow 0.3s;
+}
+
+#characterForm button:hover {
+    background-color: #ff1a1a;
+    box-shadow: 0 0 15px rgba(255, 0, 0, 0.6);
+}

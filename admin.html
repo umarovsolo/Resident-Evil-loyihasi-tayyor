@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="uz">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Resident Evil - Admin Panel</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <div class="admin-container">
+        <h2>Yangi Personaj Qo'shish</h2>
+        <form id="characterForm">
+            <input type="text" id="name" placeholder="Personaj ismi (masalan: Leon S. Kennedy)" required>
+            <input type="text" id="role" placeholder="Roli (masalan: Agent)" required>
+            <textarea id="bio" placeholder="Qisqacha tarjimai holi / bio..." required></textarea>
+            <input type="file" id="imageFile" accept="image/*">
+
+            <button type="submit">Qo'shish</button>
+        </form>
+    </div>
+
+    <div id="adminCharacterList" style="max-width: 600px; margin: 30px auto; color: white;">
+        <h2>Mavjud Personajlar</h2>
+        <!-- Bu yerga JS orqali personajlar ro'yxati keladi -->
+    </div>
+    <div id="adminCharacterList" style="max-width: 500px; margin: 30px auto; padding: 0 20px;"></div>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="script.js"></script>
+</body>
+
+</html>
