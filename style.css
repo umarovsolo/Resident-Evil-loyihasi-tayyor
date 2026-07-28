@@ -1,57 +1,185 @@
-/* 1. Umumiy sahifa va fontlar */
+/* ==================== 1. UMUMIY VA LIQUID GLASS STIL ==================== */
+* {
+    box-sizing: border-box;
+}
+
 body {
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    background-color: #0d0d0d;
-    color: #e0e0e0;
+    background-color: #0a0a0a;
+    background-image: 
+        radial-gradient(circle at 15% 20%, rgba(255, 0, 0, 0.2) 0%, transparent 40%),
+        radial-gradient(circle at 85% 70%, rgba(180, 0, 0, 0.15) 0%, transparent 45%),
+        radial-gradient(circle at 50% 50%, rgba(50, 0, 0, 0.3) 0%, transparent 60%);
+    background-attachment: fixed;
+    color: #ffffff;
     margin: 0;
-    padding: 20px;
+    padding: 0;
 }
 
-/* 2. Sarlavhalar */
-h1, h2, h3 {
-    color: #ff3333;
-    text-align: center;
-    text-shadow: 0 0 10px rgba(255, 0, 0, 0.5);
+/* iOS Liquid Glassmorphic panel klassi */
+.glass-panel {
+    background: rgba(255, 255, 255, 0.04);
+    backdrop-filter: blur(20px) saturate(180%);
+    -webkit-backdrop-filter: blur(20px) saturate(180%);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    border-radius: 20px;
+    box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.6),
+                inset 0 1px 1px 0 rgba(255, 255, 255, 0.15);
+    transition: all 0.3s ease;
 }
 
-/* 3. Grid Konteyner */
-#characterList {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
-    gap: 20px;
-    padding: 20px;
-    max-width: 1200px;
-    margin: 0 auto;
-    align-items: stretch; /* Kartochkalarni bir xil balandlikka keltirish */
+.glass-panel:hover {
+    border-color: rgba(255, 51, 51, 0.4);
+    box-shadow: 0 12px 40px 0 rgba(255, 0, 0, 0.25),
+                inset 0 1px 1px 0 rgba(255, 255, 255, 0.3);
 }
 
-/* 4. Kartochkalar */
-.character-card {
-    background: #121212;
-    border: 1px solid #330000;
-    border-radius: 12px;
-    padding: 15px;
+/* ==================== 2. STRUCTURAL LAYOUT & NAV ==================== */
+
+/* Sidebar (Desktop PC) */
+.sidebar {
+    position: fixed;
+    top: 20px;
+    left: 20px;
+    width: 240px;
+    height: calc(100vh - 40px);
+    padding: 25px 15px;
     display: flex;
     flex-direction: column;
-    justify-content: space-between; /* Tugmani har doim pastda ushlaydi */
-    box-shadow: 0 4px 15px rgba(255, 0, 0, 0.15);
-    transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
-    box-sizing: border-box;
+    z-index: 100;
+}
+
+.sidebar .logo h2 {
+    color: #ff3333;
+    font-size: 20px;
+    text-align: center;
+    margin-bottom: 30px;
+    letter-spacing: 2px;
+}
+
+.sidebar-menu {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.sidebar-menu a {
+    color: #ccc;
+    text-decoration: none;
+    padding: 12px 18px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-weight: 500;
+    transition: 0.3s;
+}
+
+.sidebar-menu a:hover, 
+.sidebar-menu a.active {
+    background: rgba(255, 51, 51, 0.2);
+    color: #fff;
+    border: 1px solid rgba(255, 51, 51, 0.4);
+}
+
+/* Asosiy Ishchi Maydon */
+main.container {
+    margin-left: 270px;
+    width: calc(100% - 270px);
+    padding: 30px 40px;
+    min-height: 100vh;
+}
+
+/* Mobile Bottom Nav */
+.mobile-nav {
+    display: none;
+    position: fixed;
+    bottom: 15px;
+    left: 5%;
+    width: 90%;
+    height: 60px;
+    justify-content: space-around;
+    align-items: center;
+    z-index: 1000;
+}
+
+.mobile-nav a {
+    color: #888;
+    text-decoration: none;
+    font-size: 22px;
+    transition: 0.3s;
+}
+
+.mobile-nav a.active {
+    color: #ff3333;
+    transform: scale(1.2);
+}
+
+/* ==================== 3. SARLAVHALAR VA MATNLAR ==================== */
+.main-title, h1 {
+    color: #ff3333;
+    font-size: 32px;
+    text-align: center;
+    margin-top: 10px;
+    margin-bottom: 25px;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    text-shadow: 0 0 10px rgba(255, 51, 51, 0.5);
+}
+
+.home-text, .section-desc {
+    color: #d1d1d1;
+    font-size: 16px;
+    line-height: 1.6;
+    text-align: center;
+}
+
+/* ==================== 4. SPA SECTION SWITCHING ==================== */
+.page-section {
+    display: none;
+    animation: fadeIn 0.4s ease-in-out;
+}
+
+.page-section.active-section {
+    display: block;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* ==================== 5. GRID & KARTOCHKALAR ==================== */
+.character-grid, #characterList {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    gap: 20px;
+    width: 100%;
+    margin-top: 20px;
+}
+
+.character-card {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
     height: 100%;
+    padding: 15px;
+    border-radius: 12px;
+    box-shadow: 0 4px 15px rgba(255, 0, 0, 0.15);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
 
 .character-card:hover {
     transform: translateY(-5px);
     box-shadow: 0 8px 25px rgba(255, 0, 0, 0.35);
-    border-color: #ff1a1a;
 }
 
 .character-card img {
     width: 100%;
     height: 200px;
     object-fit: cover;
-    border-radius: 6px;
-    border-bottom: 2px solid #330000;
+    border-radius: 8px;
+    border-bottom: 2px solid rgba(255, 0, 0, 0.3);
 }
 
 .character-card h3 {
@@ -64,7 +192,7 @@ h1, h2, h3 {
     text-overflow: ellipsis;
 }
 
-/* Matnlar uchun aniq qator cheklovi va fixed balandlik */
+/* Text clamping (uzun matnlarni chiroyli kesish) */
 .role-text {
     font-size: 13px;
     color: #cccccc;
@@ -87,16 +215,17 @@ h1, h2, h3 {
     height: 55px;
 }
 
-/* Kartochka tugmasi */
 .character-card button {
     background: #cc0000;
     color: white;
     border: none;
     padding: 10px;
-    border-radius: 6px;
+    border-radius: 8px;
     cursor: pointer;
     font-weight: bold;
     width: 100%;
+    margin-top: 15px;
+    align-self: flex-end;
     transition: background-color 0.3s ease, box-shadow 0.3s ease;
 }
 
@@ -105,50 +234,36 @@ h1, h2, h3 {
     box-shadow: 0 0 12px rgba(255, 0, 0, 0.5);
 }
 
-/* 5. Modal oyna (Pop-up) */
-.modal {
-    display: none;
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background-color: rgba(0, 0, 0, 0.85);
-    z-index: 1000;
+/* ==================== 6. SEARCH & ADMIN FORM ==================== */
+.search-container {
+    display: flex;
     justify-content: center;
-    align-items: center;
-    backdrop-filter: blur(5px);
+    margin-bottom: 30px;
 }
 
-.modal-content {
-    background: #121212;
-    border: 2px solid #cc0000;
-    box-shadow: 0 0 25px rgba(204, 0, 0, 0.4);
-    padding: 25px;
+#searchInput {
     width: 90%;
-    max-width: 500px;
-    border-radius: 10px;
-    color: #e0e0e0;
-    position: relative;
-    max-height: 80vh;
-    overflow-y: auto;
+    max-width: 400px;
+    padding: 12px 20px;
+    background: rgba(255, 255, 255, 0.05);
+    backdrop-filter: blur(15px);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    border-radius: 12px;
+    color: white;
+    font-size: 16px;
+    outline: none;
+    transition: 0.3s ease;
 }
 
-.close-btn {
-    position: absolute;
-    top: 10px;
-    right: 15px;
-    color: #ff3333;
-    font-size: 28px;
-    font-weight: bold;
-    cursor: pointer;
+#searchInput::placeholder {
+    color: #888888;
 }
 
-.close-btn:hover {
-    color: #ffffff;
+#searchInput:focus {
+    border-color: #ff3333;
+    box-shadow: 0 0 15px rgba(255, 51, 51, 0.4);
 }
 
-/* 6. Admin Formasi */
 #characterForm {
     background: #161616;
     border: 1px solid #330000;
@@ -173,7 +288,6 @@ h1, h2, h3 {
     border-radius: 8px;
     font-size: 14px;
     outline: none;
-    box-sizing: border-box;
     transition: border-color 0.3s;
 }
 
@@ -200,55 +314,59 @@ h1, h2, h3 {
     box-shadow: 0 0 15px rgba(255, 0, 0, 0.6);
 }
 
-.main-title {
-    text-align: center;
-    color: #ff3333;
-    font-size: 32px;
-    margin-top: 30px;
-    margin-bottom: 20px;
-    text-transform: uppercase;
-    letter-spacing: 2px;
-    text-shadow: 0 0 10px rgba(255, 51, 51, 0.5); /* Yengil qizil yog'du effect */
-}
-
-.search-container {
-    display: flex;
+/* ==================== 7. MODAL POPUP ==================== */
+.modal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.85);
+    z-index: 1000;
     justify-content: center;
-    margin-bottom: 30px;
+    align-items: center;
+    backdrop-filter: blur(5px);
 }
 
-#searchInput {
+.modal-content {
+    padding: 25px;
     width: 90%;
-    max-width: 400px;
-    padding: 12px 20px;
-    background-color: #1a1a1a;
-    border: 2px solid #ff3333;
-    border-radius: 8px;
+    max-width: 500px;
+    color: #e0e0e0;
+    position: relative;
+    max-height: 80vh;
+    overflow-y: auto;
+}
+
+.close-btn {
+    position: absolute;
+    top: 10px;
+    right: 15px;
+    color: #ff3333;
+    font-size: 28px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.close-btn:hover {
     color: #ffffff;
-    font-size: 16px;
-    outline: none;
-    transition: all 0.3s ease;
 }
 
-#searchInput::placeholder {
-    color: #888888;
-}
+/* ==================== 8. MOBIL MOSLASHUVCHANLIK ==================== */
+@media (max-width: 768px) {
+    .sidebar {
+        display: none;
+    }
 
-#searchInput:focus {
-    box-shadow: 0 0 12px rgba(255, 51, 51, 0.8);
-    border-color: #ff4d4d;
-}
-.character-card {
-    background-color: #161616;
-    border: 1px solid #330000;
-    border-radius: 8px;
-    display: flex;
-    flex-direction: column;
-    overflow: hidden;
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
-}
+    main.container {
+        margin-left: 0;
+        width: 100%;
+        padding: 20px;
+        padding-bottom: 90px;
+    }
 
-.character-card:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 5px 15px rgba(255, 0, 0, 0.3);
+    .mobile-nav {
+        display: flex;
+    }
 }

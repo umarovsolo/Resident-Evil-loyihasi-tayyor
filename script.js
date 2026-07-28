@@ -95,7 +95,9 @@ async function loadAdminCharacters() {
 
     data.forEach(char => {
         const item = document.createElement('div');
-        item.style.cssText = "background: #161616; border: 1px solid #330000; padding: 12px 20px; margin-bottom: 12px; border-radius: 8px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 4px 10px rgba(255, 0, 0, 0.1);";
+        // Admin ro'yxatidagi kartochkalarga ham shisha effekti beramiz
+        item.className = "glass-panel";
+        item.style.cssText = "padding: 12px 20px; margin-bottom: 12px; display: flex; justify-content: space-between; align-items: center;";
         
         item.innerHTML = `
             <span style="color: #ff4d4d; font-weight: bold; font-size: 16px;">${char.name}</span>
@@ -117,19 +119,24 @@ async function renderCharacters() {
         return;
     }
 
-    charactersData = data; // Qidiruv va Modal uchun global massivga saqlaymiz
+    charactersData = data; 
     container.innerHTML = ''; 
 
     data.forEach((char) => {
         const card = document.createElement('div');
-        card.classList.add('character-card');
+        
+        // Shu yerda kartochkaga ham oddiy style, ham Liquid Shisha klassi berildi:
+        card.className = "character-card glass-panel";
 
         card.innerHTML = `
-            <img src="${char.image_url}" alt="${char.name}" style="width: 100%; height: 200px; object-fit: cover; border-radius: 6px;">
-            <h3 style="color: #ff3333; margin-top: 10px;">${char.name}</h3>
-            <p class="role-text"><b>Rol:</b> ${char.role}</p>
-            <p class="bio-preview" style="color: #aaa; font-size: 14px;">${char.bio}</p>
-            <button onclick="openModal('${char.id}')" style="background: #cc0000; color: white; border: none; padding: 8px 15px; border-radius: 5px; cursor: pointer; width: 100%; margin-top: 10px; font-weight: bold;">Batafsil o'qish</button>
+            <img src="${char.image_url}" alt="${char.name}" style="width: 100%; height: 220px; object-fit: cover; border-radius: 12px 12px 0 0;">
+            <div style="padding: 15px; display: flex; flex-direction: column; justify-content: space-between; flex-grow: 1;">
+                <div>
+                    <h3 style="color: #ff3333; margin: 0 0 8px 0; font-size: 18px;">${char.name}</h3>
+                    <p style="color: #cccccc; font-size: 14px; margin: 0 0 12px 0;"><b>Rol:</b> ${char.role || 'Noma\'lum'}</p>
+                </div>
+                <button onclick="openModal('${char.id}')" style="background: #cc0000; color: white; border: none; padding: 10px; border-radius: 8px; cursor: pointer; width: 100%; font-weight: bold; transition: 0.2s;">Batafsil o'qish</button>
+            </div>
         `;
         container.appendChild(card);
     });
@@ -174,7 +181,7 @@ const searchInput = document.getElementById('searchInput');
 if (searchInput) {
     searchInput.addEventListener('input', (e) => {
         const searchText = e.target.value.toLowerCase().trim();
-        const cards = document.querySelectorAll('.character-card'); // To'g'ri klass tanlandi
+        const cards = document.querySelectorAll('.character-card');
 
         cards.forEach(card => {
             const nameElement = card.querySelector('h3');
@@ -183,50 +190,49 @@ if (searchInput) {
                 const name = nameElement.textContent.toLowerCase();
 
                 if (name.includes(searchText)) {
-                    card.style.display = ''; // Ko'rsatiladi
+                    card.style.display = ''; 
                 } else {
-                    card.style.display = 'none'; // Berkitiladi
+                    card.style.display = 'none'; 
                 }
             }
         });
     });
 }
 
-// ==================== 6. SAHIFA YUKLANIShI ====================
+// ==================== 6. SAHIFA YUKLANISHI ====================
 document.addEventListener('DOMContentLoaded', () => {
     loadAdminCharacters();
     renderCharacters();
 });
 
-// Asosiy sahifada personajlarni chiqarish (Tartiblangan variant)
-async function renderCharacters() {
-    const container = document.getElementById('characterList');
-    if (!container) return; 
+// Menyu bosilganda bo'limlarni almashtirish
+function initNavigation() {
+    const navLinks = document.querySelectorAll('.nav-link');
+    const sections = document.querySelectorAll('.page-section');
 
-    const { data, error } = await db.from('characters').select('*');
+    navLinks.forEach(link => {
+        link.addEventListener('click', (e) => {
+            e.preventDefault();
+            const targetId = link.getAttribute('data-target');
+            if (!targetId) return;
 
-    if (error) {
-        console.error('Oqib olishda xatolik:', error);
-        return;
-    }
+            navLinks.forEach(l => l.classList.remove('active'));
+            document.querySelectorAll(`.nav-link[data-target="${targetId}"]`).forEach(l => {
+                l.classList.add('active');
+            });
 
-    charactersData = data; 
-    container.innerHTML = ''; 
-
-    data.forEach((char) => {
-        const card = document.createElement('div');
-        card.classList.add('character-card');
-
-        card.innerHTML = `
-            <img src="${char.image_url}" alt="${char.name}" style="width: 100%; height: 220px; object-fit: cover; border-radius: 6px 6px 0 0;">
-            <div style="padding: 15px; display: flex; flex-direction: column; justify-content: space-between; flex-grow: 1;">
-                <div>
-                    <h3 style="color: #ff3333; margin: 0 0 8px 0; font-size: 18px;">${char.name}</h3>
-                    <p style="color: #cccccc; font-size: 14px; margin: 0 0 12px 0;"><b>Rol:</b> ${char.role || 'Noma\'lum'}</p>
-                </div>
-                <button onclick="openModal('${char.id}')" style="background: #cc0000; color: white; border: none; padding: 10px; border-radius: 5px; cursor: pointer; width: 100%; font-weight: bold; transition: 0.2s;">Batafsil o'qish</button>
-            </div>
-        `;
-        container.appendChild(card);
+            sections.forEach(sec => sec.classList.remove('active-section'));
+            const targetSection = document.getElementById(targetId);
+            if (targetSection) {
+                targetSection.classList.add('active-section');
+            }
+        });
     });
 }
+
+// Dom yuklanganda ishga tushirish
+document.addEventListener('DOMContentLoaded', () => {
+    if (typeof loadAdminCharacters === 'function') loadAdminCharacters();
+    if (typeof renderCharacters === 'function') renderCharacters();
+    initNavigation();
+});

@@ -5,18 +5,68 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="style.css">
-    <title>Resident evil</title>
+    <title>Resident Evil</title>
 </head>
 
 <body>
-    <h1 class="main-title">Resident Evil Personajlari</h1>
-    <div class="search-container">
-        <input type="text" id="searchInput" placeholder="Personaj nomini qidiring (masalan: Leon)...">
-    </div>
-    <div id="characterList" class="character-grid"></div>
-    <!-- Modal oyna (To'liq ma'lumotni ko'rsatish uchun) -->
+    <!-- 1. PClar uchun Chap tomondagi sidebar -->
+    <aside class="sidebar glass-panel">
+        <div class="logo">
+            <h2>RESIDENT EVIL</h2>
+        </div>
+        <nav class="sidebar-menu">
+            <a href="#" class="nav-link" data-target="home-section"><i class="icon">🏠</i> <span>Bosh sahifa</span></a>
+            <a href="#" class="nav-link active" data-target="characters-section"><i class="icon">👤</i> <span>Personajlar</span></a>
+            <a href="#" class="nav-link" data-target="games-section"><i class="icon">🎮</i> <span>O'yinlar</span></a>
+            <a href="#" class="nav-link" data-target="news-section"><i class="icon">📰</i> <span>Yangiliklar</span></a>
+        </nav>
+    </aside>
+
+    <!-- 2. Telefonlar uchun Pastki Navigatsiya (Mobile Bottom Nav) -->
+    <nav class="mobile-nav glass-panel">
+        <a href="#" class="nav-link" data-target="home-section">🏠</a>
+        <a href="#" class="nav-link active" data-target="characters-section">👤</a>
+        <a href="#" class="nav-link" data-target="games-section">🎮</a>
+        <a href="#" class="nav-link" data-target="news-section">📰</a>
+    </nav>
+
+    <!-- 3. Asosiy Bo'limlar -->
+    <main class="container">
+
+        <!-- 1. BOSH SAHIFA -->
+        <section id="home-section" class="page-section">
+            <h1 class="main-title">XUSH KELIBSIZ!</h1>
+            <p class="home-text">
+                Resident Evil olamining barcha personajlari, o'yinlari va so'nggi yangiliklari jamlangan platformaga xush kelibsiz.
+            </p>
+        </section>
+
+        <!-- 2. PERSONAJLAR BO'LIMI -->
+        <section id="characters-section" class="page-section active-section">
+            <h1 class="main-title">Resident Evil Personajlari</h1>
+            <div class="search-container">
+                <input type="text" id="searchInput" placeholder="Personaj nomini qidiring (masalan: Leon)...">
+            </div>
+            <div id="characterList" class="character-grid"></div>
+        </section>
+
+        <!-- 3. O'YINLAR BO'LIMI -->
+        <section id="games-section" class="page-section">
+            <h1 class="main-title">Resident Evil O'yinlari</h1>
+            <p class="section-desc">O'yinlar bo'limi tez orada ishga tushadi...</p>
+        </section>
+
+        <!-- 4. YANGILIKLAR BO'LIMI -->
+        <section id="news-section" class="page-section">
+            <h1 class="main-title">So'nggi Yangiliklar</h1>
+            <p class="section-desc">Yangiliklar bo'limi tez orada ishga tushadi...</p>
+        </section>
+
+    </main>
+
+    <!-- 4. Modal oyna (To'liq ma'lumotni ko'rsatish uchun) -->
     <div id="characterModal" class="modal">
-        <div class="modal-content">
+        <div class="modal-content glass-panel">
             <span class="close-btn" onclick="closeModal()">&times;</span>
             <div id="modalBody"></div>
         </div>
