@@ -3,7 +3,8 @@ const SUPABASE_ANON_KEY = 'sb_publishable_KipXxEEDmDOnN_5lkLlP4w_yknnktkv';
 
 const db = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-let charactersData = []; // Barcha personajlarni xotirada saqlash uchun
+let charactersData = [];
+let gamesData = [];
 
 // ==================== 1. ADMIN PANEL: FORMA YUBORISH ====================
 const form = document.getElementById('characterForm');
@@ -19,7 +20,6 @@ if (form) {
 
         let imageUrl = '';
 
-        // Agar rasm tanlangan bo'lsa, Supabase Storage'ga yuklaymiz
         if (imageFileInput.files.length > 0) {
             const file = imageFileInput.files[0];
             const fileExt = file.name.split('.').pop();
@@ -42,7 +42,6 @@ if (form) {
             imageUrl = publicURLData.publicUrl;
         }
 
-        // Ma'lumotlarni characters jadvaliga saqlash
         const { error: insertError } = await db
             .from('characters')
             .insert([{ name, role, bio, image_url: imageUrl }]);
@@ -139,23 +138,22 @@ async function renderCharacters() {
     });
 }
 
-// ==================== 4. O'YINLARNI CHIQARISH ====================
-// O'yinlarni Supabase'dan yuklash
+// ==================== 4. O'YINLARNI SUPABASE'DAN YUKLASH ====================
 async function fetchGames() {
     const gameList = document.getElementById('gameList');
     if (!gameList) return;
 
-    // Tarmoqqa bog'liq bo'lmagan, 100% kafolatlangan zaxira SVG rasmi
     const fallbackImage = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='300' height='200' viewBox='0 0 300 200'><rect width='100%' height='100%' fill='%231a0000'/><text x='50%' y='50%' fill='%23ff3333' dominant-baseline='middle' text-anchor='middle' font-family='sans-serif' font-size='16'>Rasm Topilmadi</text></svg>";
 
     try {
         const { data: games, error } = await db
             .from('games')
             .select('*')
-            // Yangi saralash (tartib raqami bo'yicha o'sish tartibida):
             .order('display_order', { ascending: true });
+
         if (error) throw error;
 
+        gamesData = games;
         gameList.innerHTML = '';
 
         games.forEach(game => {
@@ -175,7 +173,7 @@ async function fetchGames() {
                 <div style="padding: 15px; display: flex; flex-direction: column; justify-content: space-between; flex-grow: 1;">
                     <div>
                         <h3 style="color: #ff3333; margin: 0 0 8px 0; font-size: 16px; white-space: normal; line-height: 1.3;">
-                            ${game.title} (${game.release_year})
+                            ${game.title} ${game.release_year ? `(${game.release_year})` : ''}
                         </h3>
                         <p style="color: #cccccc; font-size: 13px; margin: 0 0 8px 0;">
                             <b>Janr:</b> ${game.genre || 'Noma\'lum'}
@@ -185,12 +183,15 @@ async function fetchGames() {
                         </p>
                     </div>
                     
-                    <button style="background: #cc0000; color: white; border: none; padding: 10px; border-radius: 8px; cursor: pointer; font-weight: bold; width: 100%; margin-top: auto;" 
-                            onclick="alert('${game.title} haqida batafsil ma\\'lumot tez orada...')">
+                    <button class="view-btn" style="background: #cc0000; color: white; border: none; padding: 10px; border-radius: 8px; cursor: pointer; font-weight: bold; width: 100%; margin-top: auto;">
                         Batafsil
                     </button>
                 </div>
             `;
+
+            // Alert o'rniga modal oynasini ochamiz
+            const viewBtn = card.querySelector('.view-btn');
+            viewBtn.addEventListener('click', () => openGameModal(game));
 
             gameList.appendChild(card);
         });
@@ -199,7 +200,8 @@ async function fetchGames() {
     }
 }
 
-// ==================== 5. MODAL OYNASI MANTIQI ====================
+// ==================== 5. MODAL OYNALAR MANTIQI ====================
+// Personajlar uchun modal
 function openModal(id) {
     const char = charactersData.find(c => String(c.id) === String(id));
     if (!char) return;
@@ -212,9 +214,30 @@ function openModal(id) {
     modalBody.innerHTML = `
         <img src="${char.image_url}" alt="${char.name}" style="width: 100%; max-height: 250px; object-fit: cover; border-radius: 8px; border: 1px solid #330000;">
         <h2 style="color: #ff3333; margin-top: 15px; text-align: center;">${char.name}</h2>
-        <p style="color: #ff4d4d; text-align: center;"><b>Rol:</b> ${char.role}</p>
+        <p style="color: #ff4d4d; text-align: center;"><b>Rol:</b> ${char.role || 'Noma\'lum'}</p>
         <hr style="border-color: #330000; margin: 15px 0;">
-        <p style="line-height: 1.6; color: #cccccc; white-space: pre-wrap;">${char.bio}</p>
+        <p style="line-height: 1.6; color: #cccccc; white-space: pre-wrap;">${char.bio || ''}</p>
+    `;
+
+    modal.style.display = 'flex';
+}
+
+// O'yinlar uchun modal
+function openGameModal(game) {
+    const modal = document.getElementById('characterModal');
+    const modalBody = document.getElementById('modalBody');
+
+    if (!modal || !modalBody) return;
+
+    modalBody.innerHTML = `
+        <div class="game-modal-detail">
+            <img src="${game.image_url}" alt="${game.title}" style="width: 100%; height: 220px; object-fit: cover; border-radius: 12px; margin-bottom: 15px; border: 1px solid rgba(255, 51, 51, 0.3);">
+            <h2 style="color: #ff3333; font-size: 22px; margin-bottom: 8px;">${game.title} ${game.release_year ? `(${game.release_year})` : ''}</h2>
+            <p style="color: #ff6666; font-size: 14px; margin-bottom: 12px; font-weight: 600;">Janr: ${game.genre || 'Noma\'lum'}</p>
+            <p style="color: #d1d1d1; line-height: 1.6; font-size: 14px; white-space: pre-wrap;">
+                ${game.full_description || game.description || 'Tavsif mavjud emas.'}
+            </p>
+        </div>
     `;
 
     modal.style.display = 'flex';
@@ -259,7 +282,7 @@ if (searchInput) {
 // ==================== 7. NAVIGATSIYA MANTIQI ====================
 function initNavigation() {
     const navLinks = document.querySelectorAll('.nav-link');
-    const sections = document.querySelectorAll('.page-section');
+    const pageSections = document.querySelectorAll('.page-section');
 
     navLinks.forEach(link => {
         link.addEventListener('click', (e) => {
@@ -267,16 +290,24 @@ function initNavigation() {
             const targetId = link.getAttribute('data-target');
             if (!targetId) return;
 
-            navLinks.forEach(l => l.classList.remove('active'));
-            document.querySelectorAll(`.nav-link[data-target="${targetId}"]`).forEach(l => {
-                l.classList.add('active');
+            pageSections.forEach(section => {
+                section.classList.remove('active-section');
             });
 
-            sections.forEach(sec => sec.classList.remove('active-section'));
             const targetSection = document.getElementById(targetId);
             if (targetSection) {
                 targetSection.classList.add('active-section');
             }
+
+            navLinks.forEach(nav => nav.classList.remove('active'));
+            document.querySelectorAll(`[data-target="${targetId}"]`).forEach(nav => {
+                nav.classList.add('active');
+            });
+
+            window.scrollTo({
+                top: 0,
+                behavior: 'instant'
+            });
         });
     });
 }
@@ -285,46 +316,6 @@ function initNavigation() {
 document.addEventListener('DOMContentLoaded', () => {
     loadAdminCharacters();
     renderCharacters();
-    fetchGames(); // O'yinlarni yuklash qo'shildi
+    fetchGames();
     initNavigation();
 });
-
-
-// Navigatsiya va skrollni tepaga qaytarish mantiqi
-function initNavigation() {
-    const navLinks = document.querySelectorAll('.nav-link');
-    const pageSections = document.querySelectorAll('.page-section');
-
-    navLinks.forEach(link => {
-        link.addEventListener('click', (e) => {
-            const targetId = link.getAttribute('data-target');
-            if (!targetId) return;
-
-            // 1. Barcha bo'limlarni yashirish
-            pageSections.forEach(section => {
-                section.classList.remove('active-section');
-            });
-
-            // 2. Bosilgan bo'limni ko'rsatish
-            const targetSection = document.getElementById(targetId);
-            if (targetSection) {
-                targetSection.classList.add('active-section');
-            }
-
-            // 3. Desktop va mobil menyudagi mos tugmalarni 'active' qilish
-            navLinks.forEach(nav => nav.classList.remove('active'));
-            document.querySelectorAll(`[data-target="${targetId}"]`).forEach(nav => {
-                nav.classList.add('active');
-            });
-
-            // 4. Ekran skrollini eng tepaga qaytarish
-            window.scrollTo({
-                top: 0,
-                behavior: 'instant' // Ravon ko'tarilishi uchun 'smooth' qilsangiz ham bo'ladi
-            });
-        });
-    });
-}
-
-// Sahifa yuklanganda navigatsiyani ishga tushirish
-document.addEventListener('DOMContentLoaded', initNavigation);
