@@ -10,6 +10,7 @@
 </head>
 
 <body>
+    <!-- 1. YON MENYU (DESKTOP) -->
     <nav class="sidebar">
         <h1 class="logo">RESIDENT EVIL</h1>
 
@@ -67,10 +68,11 @@
             </li>
         </ul>
     </nav>
-    <!-- 3. Asosiy Bo'limlar -->
+
+    <!-- 2. ASOSIY BO'LIMLAR -->
     <main class="container">
 
-        <!-- 1. BOSH SAHIFA (Boshida active-section bo'lib turadi) -->
+        <!-- 1. BOSH SAHIFA -->
         <section id="home-section" class="page-section active-section">
             <h1 class="main-title">XUSH KELIBSIZ!</h1>
             <p class="home-text">
@@ -102,7 +104,34 @@
 
     </main>
 
-    <!-- 4. Modal oyna (To'liq ma'lumotni ko'rsatish uchun) -->
+    <!-- 3. MOBIL PASTKI MENYU -->
+    <nav class="mobile-nav glass-panel">
+        <a href="#home" class="nav-link active" data-target="home-section">
+            <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" />
+                <polyline points="9 22 9 12 15 12 15 22" />
+            </svg>
+        </a>
+        <a href="#characters" class="nav-link" data-target="characters-section">
+            <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2" />
+                <circle cx="9" cy="7" r="4" />
+            </svg>
+        </a>
+        <a href="#games" class="nav-link" data-target="games-section">
+            <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <rect width="20" height="12" x="2" y="6" rx="6" />
+                <line x1="6" x2="10" y1="12" y2="12" />
+            </svg>
+        </a>
+        <a href="#news" class="nav-link" data-target="news-section">
+            <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M4 22h16a2 2 0 0 0 2-2V4a2 2 0 0 0-2-2H8a2 2 0 0 0-2 2v16a2 2 0 0 1-2 2Zm0 0a2 2 0 0 1-2-2v-9c0-1.1.9-2 2-2h2" />
+            </svg>
+        </a>
+    </nav>
+
+    <!-- 4. MODAL OYNA -->
     <div id="characterModal" class="modal">
         <div class="modal-content glass-panel">
             <span class="close-btn" onclick="closeModal()">&times;</span>
