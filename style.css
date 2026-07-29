@@ -1,27 +1,36 @@
-/* ==================== 1. UMUMIY VA LIQUID GLASS STIL ==================== */
+/* ==================== 1. GLOBAL RESET VA BODY ==================== */
 * {
     box-sizing: border-box;
-}
-
-body {
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    background-color: #0a0a0a;
-    background-image: 
-        radial-gradient(circle at 15% 20%, rgba(255, 0, 0, 0.2) 0%, transparent 40%),
-        radial-gradient(circle at 85% 70%, rgba(180, 0, 0, 0.15) 0%, transparent 45%),
-        radial-gradient(circle at 50% 50%, rgba(50, 0, 0, 0.3) 0%, transparent 60%);
-    background-attachment: fixed;
-    color: #ffffff;
     margin: 0;
     padding: 0;
 }
 
-/* iOS Liquid Glassmorphic panel klassi */
-.glass-panel {
-    background: rgba(255, 255, 255, 0.04);
-    backdrop-filter: blur(20px) saturate(180%);
-    -webkit-backdrop-filter: blur(20px) saturate(180%);
-    border: 1px solid rgba(255, 255, 255, 0.12);
+/* Menyulardagi nuqtachalarni to'liq yo'qotish */
+ul, ol, li {
+    list-style: none;
+    list-style-type: none;
+}
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    color: #ffffff;
+    min-height: 100vh;
+    
+    /* Resident Evil dark background overlay bilan */
+    background-image: linear-gradient(rgba(10, 0, 0, 0.8), rgba(0, 0, 0, 0.9)), 
+                      url('https://images4.alphacoders.com/114/1141381.jpg');
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed;
+}
+
+/* ==================== 2. LIQUID GLASSMORPHISM PANELS ==================== */
+.glass-panel, 
+.sidebar {
+    background: rgba(18, 18, 20, 0.55);
+    backdrop-filter: blur(16px) saturate(180%);
+    -webkit-backdrop-filter: blur(16px) saturate(180%);
+    border: 1px solid rgba(255, 255, 255, 0.1);
     border-radius: 20px;
     box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.6),
                 inset 0 1px 1px 0 rgba(255, 255, 255, 0.15);
@@ -34,9 +43,7 @@ body {
                 inset 0 1px 1px 0 rgba(255, 255, 255, 0.3);
 }
 
-/* ==================== 2. STRUCTURAL LAYOUT & NAV ==================== */
-
-/* Sidebar (Desktop PC) */
+/* ==================== 3. SIDEBAR & NAVIGATION ==================== */
 .sidebar {
     position: fixed;
     top: 20px;
@@ -49,7 +56,8 @@ body {
     z-index: 100;
 }
 
-.sidebar .logo h2 {
+.sidebar .logo h2,
+.sidebar .logo h1 {
     color: #ff3333;
     font-size: 20px;
     text-align: center;
@@ -57,14 +65,15 @@ body {
     letter-spacing: 2px;
 }
 
-.sidebar-menu {
+.sidebar-menu, .nav-menu {
     display: flex;
     flex-direction: column;
     gap: 10px;
 }
 
-.sidebar-menu a {
-    color: #ccc;
+/* Menyu tugmalari va SVG ikonkalarni tekislash */
+.sidebar-menu a, .nav-link {
+    color: #cccccc;
     text-decoration: none;
     padding: 12px 18px;
     border-radius: 12px;
@@ -72,17 +81,35 @@ body {
     align-items: center;
     gap: 12px;
     font-weight: 500;
-    transition: 0.3s;
+    transition: all 0.3s ease;
 }
 
+/* SVG ikonka uslubi */
+.sidebar-menu a svg, .nav-link svg {
+    stroke: #cccccc;
+    transition: transform 0.3s ease, stroke 0.3s ease;
+    flex-shrink: 0;
+}
+
+/* Hover va faol tugma effekti */
 .sidebar-menu a:hover, 
-.sidebar-menu a.active {
-    background: rgba(255, 51, 51, 0.2);
-    color: #fff;
+.sidebar-menu a.active,
+.nav-link:hover,
+.nav-link.active {
+    background: rgba(255, 51, 51, 0.25);
+    color: #ffffff;
     border: 1px solid rgba(255, 51, 51, 0.4);
 }
 
-/* Asosiy Ishchi Maydon */
+.sidebar-menu a:hover svg, 
+.sidebar-menu a.active svg,
+.nav-link:hover svg, 
+.nav-link.active svg {
+    stroke: #ff2e4c;
+    transform: scale(1.15);
+}
+
+/* Asosiy ishchi maydon */
 main.container {
     margin-left: 270px;
     width: calc(100% - 270px);
@@ -90,7 +117,7 @@ main.container {
     min-height: 100vh;
 }
 
-/* Mobile Bottom Nav */
+/* Mobil pastki menyu */
 .mobile-nav {
     display: none;
     position: fixed;
@@ -115,7 +142,7 @@ main.container {
     transform: scale(1.2);
 }
 
-/* ==================== 3. SARLAVHALAR VA MATNLAR ==================== */
+/* ==================== 4. SARLAVHALAR VA MATNLAR ==================== */
 .main-title, h1 {
     color: #ff3333;
     font-size: 32px;
@@ -134,7 +161,7 @@ main.container {
     text-align: center;
 }
 
-/* ==================== 4. SPA SECTION SWITCHING ==================== */
+/* ==================== 5. SPA SECTION SWITCHING ==================== */
 .page-section {
     display: none;
     animation: fadeIn 0.4s ease-in-out;
@@ -149,7 +176,7 @@ main.container {
     to { opacity: 1; transform: translateY(0); }
 }
 
-/* ==================== 5. GRID & KARTOCHKALAR ==================== */
+/* ==================== 6. GRID & KARTOCHKALAR ==================== */
 .character-grid, #characterList {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
@@ -162,11 +189,8 @@ main.container {
     display: flex;
     flex-direction: column;
     justify-content: space-between;
-    height: 100%;
-    padding: 15px;
-    border-radius: 12px;
-    box-shadow: 0 4px 15px rgba(255, 0, 0, 0.15);
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    height: 100%; /* Balandlik avto moslashishi uchun */
+    overflow: hidden;
 }
 
 .character-card:hover {
@@ -192,7 +216,7 @@ main.container {
     text-overflow: ellipsis;
 }
 
-/* Text clamping (uzun matnlarni chiroyli kesish) */
+/* Uzun matnlarni ixcham chiroyli kesish */
 .role-text {
     font-size: 13px;
     color: #cccccc;
@@ -234,7 +258,7 @@ main.container {
     box-shadow: 0 0 12px rgba(255, 0, 0, 0.5);
 }
 
-/* ==================== 6. SEARCH & ADMIN FORM ==================== */
+/* ==================== 7. SEARCH & ADMIN FORM ==================== */
 .search-container {
     display: flex;
     justify-content: center;
@@ -314,7 +338,7 @@ main.container {
     box-shadow: 0 0 15px rgba(255, 0, 0, 0.6);
 }
 
-/* ==================== 7. MODAL POPUP ==================== */
+/* ==================== 8. MODAL POPUP ==================== */
 .modal {
     display: none;
     position: fixed;
@@ -353,7 +377,7 @@ main.container {
     color: #ffffff;
 }
 
-/* ==================== 8. MOBIL MOSLASHUVCHANLIK ==================== */
+/* ==================== 9. MOBIL MOSLASHUVCHANLIK ==================== */
 @media (max-width: 768px) {
     .sidebar {
         display: none;

@@ -5,37 +5,73 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="style.css">
+    <script src="https://unpkg.com/lucide@latest"></script>
     <title>Resident Evil</title>
 </head>
 
 <body>
-    <!-- 1. PClar uchun Chap tomondagi sidebar -->
-    <aside class="sidebar glass-panel">
-        <div class="logo">
-            <h2>RESIDENT EVIL</h2>
-        </div>
-        <nav class="sidebar-menu">
-            <a href="#" class="nav-link" data-target="home-section"><i class="icon">🏠</i> <span>Bosh sahifa</span></a>
-            <a href="#" class="nav-link active" data-target="characters-section"><i class="icon">👤</i>
-                <span>Personajlar</span></a>
-            <a href="#" class="nav-link" data-target="games-section"><i class="icon">🎮</i> <span>O'yinlar</span></a>
-            <a href="#" class="nav-link" data-target="news-section"><i class="icon">📰</i> <span>Yangiliklar</span></a>
-        </nav>
-    </aside>
+    <nav class="sidebar">
+        <h1 class="logo">RESIDENT EVIL</h1>
 
-    <!-- 2. Telefonlar uchun Pastki Navigatsiya (Mobile Bottom Nav) -->
-    <nav class="mobile-nav glass-panel">
-        <a href="#" class="nav-link" data-target="home-section">🏠</a>
-        <a href="#" class="nav-link active" data-target="characters-section">👤</a>
-        <a href="#" class="nav-link" data-target="games-section">🎮</a>
-        <a href="#" class="nav-link" data-target="news-section">📰</a>
+        <ul class="nav-menu">
+            <li>
+                <a href="#home" class="nav-link active" data-target="home-section">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
+                        stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" />
+                        <polyline points="9 22 9 12 15 12 15 22" />
+                    </svg>
+                    <span>Bosh sahifa</span>
+                </a>
+            </li>
+
+            <li>
+                <a href="#characters" class="nav-link" data-target="characters-section">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
+                        stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2" />
+                        <circle cx="9" cy="7" r="4" />
+                        <path d="M22 21v-2a4 4 0 0 0-3-3.87" />
+                        <path d="M16 3.13a4 4 0 0 1 0 7.75" />
+                    </svg>
+                    <span>Personajlar</span>
+                </a>
+            </li>
+
+            <li>
+                <a href="#games" class="nav-link" data-target="games-section">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
+                        stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <line x1="6" x2="10" y1="12" y2="12" />
+                        <line x1="8" x2="8" y1="10" y2="14" />
+                        <line x1="15" x2="15.01" y1="13" y2="13" />
+                        <line x1="18" x2="18.01" y1="11" y2="11" />
+                        <rect width="20" height="12" x="2" y="6" rx="6" />
+                    </svg>
+                    <span>O'yinlar</span>
+                </a>
+            </li>
+
+            <li>
+                <a href="#news" class="nav-link" data-target="news-section">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
+                        stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path
+                            d="M4 22h16a2 2 0 0 0 2-2V4a2 2 0 0 0-2-2H8a2 2 0 0 0-2 2v16a2 2 0 0 1-2 2Zm0 0a2 2 0 0 1-2-2v-9c0-1.1.9-2 2-2h2" />
+                        <path d="M18 14h-8" />
+                        <path d="M15 18h-5" />
+                        <path d="M10 6h8v4h-8V6Z" />
+                    </svg>
+                    <span>Yangiliklar</span>
+                </a>
+            </li>
+        </ul>
     </nav>
-
     <!-- 3. Asosiy Bo'limlar -->
     <main class="container">
 
-        <!-- 1. BOSH SAHIFA -->
-        <section id="home-section" class="page-section">
+        <!-- 1. BOSH SAHIFA (Boshida active-section bo'lib turadi) -->
+        <section id="home-section" class="page-section active-section">
             <h1 class="main-title">XUSH KELIBSIZ!</h1>
             <p class="home-text">
                 Resident Evil olamining barcha personajlari, o'yinlari va so'nggi yangiliklari jamlangan platformaga
@@ -44,7 +80,7 @@
         </section>
 
         <!-- 2. PERSONAJLAR BO'LIMI -->
-        <section id="characters-section" class="page-section active-section">
+        <section id="characters-section" class="page-section">
             <h1 class="main-title">Resident Evil Personajlari</h1>
             <div class="search-container">
                 <input type="text" id="searchInput" placeholder="Personaj nomini qidiring (masalan: Leon)...">
@@ -52,7 +88,6 @@
             <div id="characterList" class="character-grid"></div>
         </section>
 
-        <!-- 3. O'YINLAR BO'LIMI -->
         <!-- 3. O'YINLAR BO'LIMI -->
         <section id="games-section" class="page-section">
             <h1 class="main-title">Resident Evil O'yinlari</h1>
