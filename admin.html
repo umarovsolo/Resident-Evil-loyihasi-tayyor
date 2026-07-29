@@ -20,11 +20,44 @@
         </form>
     </div>
 
-    <div id="adminCharacterList" style="max-width: 600px; margin: 30px auto; color: white;">
+    <!-- MAVJUD PERSONAJLAR RO'YXATI -->
+    <div id="adminCharacterList" style="max-width: 600px; margin: 30px auto; padding: 0 20px; color: white;">
         <h2>Mavjud Personajlar</h2>
         <!-- Bu yerga JS orqali personajlar ro'yxati keladi -->
     </div>
-    <div id="adminCharacterList" style="max-width: 500px; margin: 30px auto; padding: 0 20px;"></div>
+
+    <!-- YANGILIK QO'SHISH FORMASI -->
+    <form id="newsForm" class="glass-panel" style="max-width: 600px; margin: 30px auto; padding: 20px;">
+        <h2 style="color: #ff3333; margin-bottom: 15px;">Yangi Yangilik Qo'shish</h2>
+
+        <input type="text" id="newsTitle" placeholder="Yangilik sarlavhasi" required
+            style="width: 100%; padding: 10px; margin-bottom: 10px;">
+
+        <select id="newsCategory"
+            style="width: 100%; padding: 10px; margin-bottom: 10px; background: #1a1a1a; color: white;">
+            <option value="O'yinlar">O'yinlar</option>
+            <option value="Mish-mishlar">Mish-mishlar</option>
+            <option value="Kino/Serial">Kino/Serial</option>
+            <option value="Tadbirlar">Tadbirlar</option>
+        </select>
+
+        <input type="file" id="newsImageFile" accept="image/*"
+            style="width: 100%; padding: 10px; margin-bottom: 10px; background: #1a1a1a; color: white;">
+
+        <textarea id="newsSummary" placeholder="Qisqa tavsif (kartochka uchun)..." rows="2"
+            style="width: 100%; padding: 10px; margin-bottom: 10px;"></textarea>
+
+        <textarea id="newsContent" placeholder="To'liq matn (modal uchun)..." rows="5"
+            style="width: 100%; padding: 10px; margin-bottom: 10px;"></textarea>
+
+        <button type="submit"
+            style="background: #cc0000; color: white; border: none; padding: 12px; width: 100%; border-radius: 8px; font-weight: bold; cursor: pointer;">
+            Yangilikni Chop Etish
+        </button>
+    </form>
+
+    <!-- ADMIN: YANGILIKLAR RO'YXATI -->
+    <div id="adminNewsList" style="max-width: 600px; margin: 30px auto;"></div>
 
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="script.js"></script>

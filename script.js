@@ -6,7 +6,7 @@ const db = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 let charactersData = [];
 let gamesData = [];
 
-// ==================== 1. ADMIN PANEL: FORMA YUBORISH ====================
+// ==================== 1. ADMIN PANEL: PERSONAJ QO'SHISH FORMASI ====================
 const form = document.getElementById('characterForm');
 
 if (form) {
@@ -49,14 +49,14 @@ if (form) {
         if (insertError) {
             alert('Xatolik: ' + insertError.message);
         } else {
-            alert('Personaj muvaffaqiyatli qo\'shildi!');
+            alert("Personaj muvaffaqiyatli qo'shildi!");
             form.reset();
             loadAdminCharacters();
         }
     });
 }
 
-// ==================== 2. ADMIN PANEL: O'CHIRISH VA RO'YXAT ====================
+// ==================== 2. ADMIN PANEL: PERSONAJ O'CHIRISH VA RO'YXAT ====================
 async function deleteCharacter(id) {
     if (!confirm("Haqiqatan ham bu personajni o'chirmoqchimisiz?")) return;
 
@@ -66,10 +66,10 @@ async function deleteCharacter(id) {
         .eq('id', id);
 
     if (error) {
-        console.error('O\'chirishda xatolik:', error.message);
+        console.error("O'chirishda xatolik:", error.message);
         alert('Xatolik yuz berdi: ' + error.message);
     } else {
-        alert('Personaj muvaffaqiyatli o\'chirildi!');
+        alert("Personaj muvaffaqiyatli o'chirildi!");
         loadAdminCharacters();
     }
 }
@@ -189,7 +189,6 @@ async function fetchGames() {
                 </div>
             `;
 
-            // Alert o'rniga modal oynasini ochamiz
             const viewBtn = card.querySelector('.view-btn');
             viewBtn.addEventListener('click', () => openGameModal(game));
 
@@ -201,7 +200,6 @@ async function fetchGames() {
 }
 
 // ==================== 5. MODAL OYNALAR MANTIQI ====================
-// Personajlar uchun modal
 function openModal(id) {
     const char = charactersData.find(c => String(c.id) === String(id));
     if (!char) return;
@@ -222,7 +220,6 @@ function openModal(id) {
     modal.style.display = 'flex';
 }
 
-// O'yinlar uchun modal
 function openGameModal(game) {
     const modal = document.getElementById('characterModal');
     const modalBody = document.getElementById('modalBody');
@@ -312,10 +309,196 @@ function initNavigation() {
     });
 }
 
-// ==================== 8. SAHIFA YUKLANGANDA ISHGA TUSHIRISH ====================
+// ==================== 8. ADMIN: YANGILIK QO'SHISH ====================
+const newsForm = document.getElementById('newsForm');
+
+if (newsForm) {
+    newsForm.addEventListener('submit', async (e) => {
+        e.preventDefault();
+
+        const title = document.getElementById('newsTitle').value;
+        const category = document.getElementById('newsCategory').value;
+        const summary = document.getElementById('newsSummary').value;
+        const content = document.getElementById('newsContent').value;
+        const imageFileInput = document.getElementById('newsImageFile');
+
+        let imageUrl = '';
+
+        if (imageFileInput && imageFileInput.files.length > 0) {
+            const file = imageFileInput.files[0];
+            const fileExt = file.name.split('.').pop();
+            const fileName = `news_${Date.now()}.${fileExt}`;
+            const filePath = `${fileName}`;
+
+            const { data, error } = await db.storage
+                .from('character-images')
+                .upload(filePath, file);
+
+            if (error) {
+                alert('Rasmni yuklashda xatolik: ' + error.message);
+                return;
+            }
+
+            const { data: publicURLData } = db.storage
+                .from('character-images')
+                .getPublicUrl(filePath);
+
+            imageUrl = publicURLData.publicUrl;
+        }
+
+        const { error } = await db
+            .from('news')
+            .insert([{ title, category, image_url: imageUrl, summary, content }]);
+
+        if (error) {
+            alert('Xatolik: ' + error.message);
+        } else {
+            alert('Yangilik muvaffaqiyatli qo\'shildi!');
+            newsForm.reset();
+            loadAdminNews();
+            fetchNews();
+        }
+    });
+}
+
+// ==================== 9. ADMIN: YANGILIKLARNI CHIQARISH VA O'CHIRISH ====================
+async function loadAdminNews() {
+    const listContainer = document.getElementById('adminNewsList');
+    if (!listContainer) return;
+
+    const { data, error } = await db.from('news').select('*').order('created_at', { ascending: false });
+
+    if (error) return console.error('Xatolik:', error);
+
+    listContainer.innerHTML = '<h2 style="color: #ff3333; text-align: center; margin-bottom: 20px;">Mavjud Yangiliklar</h2>';
+
+    data.forEach(item => {
+        const div = document.createElement('div');
+        div.className = "glass-panel";
+        div.style.cssText = "padding: 12px 20px; margin-bottom: 12px; display: flex; justify-content: space-between; align-items: center;";
+
+        div.innerHTML = `
+            <div>
+                <b style="color: #ff4d4d;">[${item.category}]</b>
+                <span style="color: white; margin-left: 8px;">${item.title}</span>
+            </div>
+            <button onclick="deleteNews('${item.id}')" style="background: #cc0000; color: white; border: none; padding: 6px 12px; border-radius: 6px; cursor: pointer;">O'chirish</button>
+        `;
+        listContainer.appendChild(div);
+    });
+}
+
+async function deleteNews(id) {
+    if (!confirm("Ushbu yangilikni o'chirmoqchimisiz?")) return;
+
+    const { error } = await db.from('news').delete().eq('id', id);
+
+    if (error) {
+        alert('Xatolik: ' + error.message);
+    } else {
+        loadAdminNews();
+        fetchNews();
+    }
+}
+
+// ==================== 10. ASOSIY SAHIFA: YANGILIKLARNI CHIQARISH ====================
+async function fetchNews() {
+    const newsSection = document.getElementById('news-section');
+    if (!newsSection) return;
+
+    // Statik "tez orada ishga tushadi" matnini o'chirib tashlash:
+    const staticText = newsSection.querySelector('p');
+    if (staticText) staticText.remove();
+
+    try {
+        const { data: newsList, error } = await db
+            .from('news')
+            .select('*')
+            .order('created_at', { ascending: false });
+
+        if (error) throw error;
+
+        let gridContainer = newsSection.querySelector('.news-grid');
+        if (!gridContainer) {
+            gridContainer = document.createElement('div');
+            gridContainer.className = 'character-grid news-grid';
+            gridContainer.style.marginTop = '20px';
+            newsSection.appendChild(gridContainer);
+        }
+
+        gridContainer.innerHTML = '';
+
+        if (newsList.length === 0) {
+            gridContainer.innerHTML = '<p style="color: #aaaaaa;">Hozircha yangiliklar yo\'q.</p>';
+            return;
+        }
+
+        newsList.forEach(news => {
+            const card = document.createElement('div');
+            card.className = 'character-card glass-panel';
+            card.style.cssText = 'display: flex; flex-direction: column; justify-content: space-between; height: 100%;';
+
+            const dateStr = new Date(news.created_at).toLocaleDateString('uz-UZ');
+
+            card.innerHTML = `
+                <img src="${news.image_url || 'https://via.placeholder.com/300x180/1a0000/ff3333?text=Resident+Evil+News'}" alt="${news.title}" style="width: 100%; height: 180px; object-fit: cover; border-radius: 12px 12px 0 0;">
+                
+                <div style="padding: 15px; display: flex; flex-direction: column; justify-content: space-between; flex-grow: 1;">
+                    <div>
+                        <div style="display: flex; justify-content: space-between; font-size: 12px; margin-bottom: 8px;">
+                            <span style="color: #ff3333; font-weight: bold;">${news.category || 'Yangilik'}</span>
+                            <span style="color: #888888;">${dateStr}</span>
+                        </div>
+                        <h3 style="color: #ffffff; font-size: 16px; margin-bottom: 8px; line-height: 1.3;">${news.title}</h3>
+                        <p style="color: #aaaaaa; font-size: 13px; line-height: 1.4; margin-bottom: 15px;">${news.summary || ''}</p>
+                    </div>
+                    
+                    <button class="read-news-btn" style="background: #cc0000; color: white; border: none; padding: 10px; border-radius: 8px; cursor: pointer; font-weight: bold; width: 100%; margin-top: auto;">
+                        To'liq o'qish
+                    </button>
+                </div>
+            `;
+
+            card.querySelector('.read-news-btn').addEventListener('click', () => openNewsModal(news));
+            gridContainer.appendChild(card);
+        });
+
+    } catch (err) {
+        console.error("Yangiliklarni yuklashda xatolik:", err.message);
+    }
+}
+
+// ==================== 11. YANGILIK MODAL OYNASI ====================
+function openNewsModal(news) {
+    const modal = document.getElementById('characterModal');
+    const modalBody = document.getElementById('modalBody');
+
+    if (!modal || !modalBody) return;
+
+    const dateStr = new Date(news.created_at).toLocaleDateString('uz-UZ');
+
+    modalBody.innerHTML = `
+        <div class="news-modal-detail">
+            <img src="${news.image_url || 'https://via.placeholder.com/300x180/1a0000/ff3333?text=Resident+Evil+News'}" style="width: 100%; max-height: 250px; object-fit: cover; border-radius: 12px; margin-bottom: 15px;">
+            <div style="display: flex; justify-content: space-between; color: #ff6666; font-size: 13px; margin-bottom: 10px;">
+                <span><b>Kategoriya:</b> ${news.category}</span>
+                <span>${dateStr}</span>
+            </div>
+            <h2 style="color: #ff3333; font-size: 20px; margin-bottom: 12px; line-height: 1.3;">${news.title}</h2>
+            <hr style="border-color: rgba(255, 51, 51, 0.2); margin-bottom: 15px;">
+            <p style="color: #d1d1d1; line-height: 1.6; font-size: 14px; white-space: pre-wrap;">${news.content || news.summary}</p>
+        </div>
+    `;
+
+    modal.style.display = 'flex';
+}
+
+// ==================== 12. SAHIFA YUKLANGANDA ISHGA TUSHIRISH ====================
 document.addEventListener('DOMContentLoaded', () => {
     loadAdminCharacters();
     renderCharacters();
     fetchGames();
     initNavigation();
+    loadAdminNews();
+    fetchNews();
 });
