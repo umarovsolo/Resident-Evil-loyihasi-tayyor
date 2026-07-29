@@ -288,3 +288,43 @@ document.addEventListener('DOMContentLoaded', () => {
     fetchGames(); // O'yinlarni yuklash qo'shildi
     initNavigation();
 });
+
+
+// Navigatsiya va skrollni tepaga qaytarish mantiqi
+function initNavigation() {
+    const navLinks = document.querySelectorAll('.nav-link');
+    const pageSections = document.querySelectorAll('.page-section');
+
+    navLinks.forEach(link => {
+        link.addEventListener('click', (e) => {
+            const targetId = link.getAttribute('data-target');
+            if (!targetId) return;
+
+            // 1. Barcha bo'limlarni yashirish
+            pageSections.forEach(section => {
+                section.classList.remove('active-section');
+            });
+
+            // 2. Bosilgan bo'limni ko'rsatish
+            const targetSection = document.getElementById(targetId);
+            if (targetSection) {
+                targetSection.classList.add('active-section');
+            }
+
+            // 3. Desktop va mobil menyudagi mos tugmalarni 'active' qilish
+            navLinks.forEach(nav => nav.classList.remove('active'));
+            document.querySelectorAll(`[data-target="${targetId}"]`).forEach(nav => {
+                nav.classList.add('active');
+            });
+
+            // 4. Ekran skrollini eng tepaga qaytarish
+            window.scrollTo({
+                top: 0,
+                behavior: 'instant' // Ravon ko'tarilishi uchun 'smooth' qilsangiz ham bo'ladi
+            });
+        });
+    });
+}
+
+// Sahifa yuklanganda navigatsiyani ishga tushirish
+document.addEventListener('DOMContentLoaded', initNavigation);
