@@ -394,3 +394,20 @@ main.container {
         display: flex;
     }
 }
+
+/* 1. Butun brauzer fonini to'q rangga o'tkazish */
+html, body {
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    min-height: 100vh;
+    background-color: #0a0a0a !important; /* Saytingizning asosiy to'q foni */
+    color: #ffffff;
+    overflow-x: hidden; /* Yon tomonga keraksiz scroll bo'lishini oldini oladi */
+}
+
+/* 2. Asosiy konteyner ekran bo'yicha to'liq yoyilishi uchun */
+body {
+    display: flex;
+    flex-direction: column;
+}
