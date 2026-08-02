@@ -20,7 +20,7 @@ if (form) {
 
         let imageUrl = '';
 
-        if (imageFileInput.files.length > 0) {
+        if (imageFileInput && imageFileInput.files.length > 0) {
             const file = imageFileInput.files[0];
             const fileExt = file.name.split('.').pop();
             const fileName = `${Date.now()}.${fileExt}`;
@@ -125,7 +125,7 @@ async function renderCharacters() {
         card.className = "character-card glass-panel";
 
         card.innerHTML = `
-            <img src="${char.image_url}" alt="${char.name}" style="width: 100%; height: 220px; object-fit: cover; border-radius: 12px 12px 0 0;">
+            <img src="${char.image_url || 'https://via.placeholder.com/200x150'}" alt="${char.name}" style="width: 100%; height: 220px; object-fit: cover; border-radius: 12px 12px 0 0;">
             <div style="padding: 15px; display: flex; flex-direction: column; justify-content: space-between; flex-grow: 1;">
                 <div>
                     <h3 style="color: #ff3333; margin: 0 0 8px 0; font-size: 18px;">${char.name}</h3>
@@ -210,7 +210,7 @@ function openModal(id) {
     if (!modal || !modalBody) return;
 
     modalBody.innerHTML = `
-        <img src="${char.image_url}" alt="${char.name}" style="width: 100%; max-height: 250px; object-fit: cover; border-radius: 8px; border: 1px solid #330000;">
+        <img src="${char.image_url || 'https://via.placeholder.com/200x150'}" alt="${char.name}" style="width: 100%; max-height: 250px; object-fit: cover; border-radius: 8px; border: 1px solid #330000;">
         <h2 style="color: #ff3333; margin-top: 15px; text-align: center;">${char.name}</h2>
         <p style="color: #ff4d4d; text-align: center;"><b>Rol:</b> ${char.role || 'Noma\'lum'}</p>
         <hr style="border-color: #330000; margin: 15px 0;">
@@ -401,13 +401,12 @@ async function deleteNews(id) {
     }
 }
 
-// ==================== 10. ASOSIY SAHIFA: YANGILIKLARNI CHIQARISH ====================
+// ==================== 10. YANGILIKLAR BO'LIMI: CHIQARISH ====================
 async function fetchNews() {
     const newsSection = document.getElementById('news-section');
     if (!newsSection) return;
 
-    // Statik "tez orada ishga tushadi" matnini o'chirib tashlash:
-    const staticText = newsSection.querySelector('p');
+    const staticText = newsSection.querySelector('.section-desc');
     if (staticText) staticText.remove();
 
     try {
@@ -468,7 +467,66 @@ async function fetchNews() {
     }
 }
 
-// ==================== 11. YANGILIK MODAL OYNASI ====================
+// ==================== 11. BOSH SAHIFA UCHUN SO'NGGI MA'LUMOTLAR ====================
+async function fetchHomeNews() {
+    const newsGrid = document.getElementById('home-news-grid');
+    if (!newsGrid) return;
+
+    const { data: news, error } = await db
+        .from('news')
+        .select('*')
+        .order('created_at', { ascending: false })
+        .limit(3);
+
+    if (error) {
+        console.error('Yangiliklarni yuklashda xatolik:', error.message);
+        return;
+    }
+
+    if (!news || news.length === 0) {
+        newsGrid.innerHTML = '<p style="color: #aaaaaa;">Hozircha yangiliklar yo\'q.</p>';
+        return;
+    }
+
+    newsGrid.innerHTML = news.map(item => `
+        <div class="character-card glass-panel" style="padding: 15px;">
+            <h3 style="color: #ff3333; margin-bottom: 8px; font-size: 16px;">${item.title}</h3>
+            <span style="color: #ff6666; font-size: 12px; font-weight: bold;">${item.category || 'Yangilik'}</span>
+            <p style="color: #cccccc; font-size: 13px; margin-top: 8px;">${item.summary || (item.content ? item.content.slice(0, 80) + '...' : '')}</p>
+        </div>
+    `).join('');
+}
+
+async function fetchHomeCharacters() {
+    const charsGrid = document.getElementById('home-chars-grid');
+    if (!charsGrid) return;
+
+    const { data: characters, error } = await db
+        .from('characters')
+        .select('*')
+        .order('created_at', { ascending: false })
+        .limit(4);
+
+    if (error) {
+        console.error('Personajlarni yuklashda xatolik:', error.message);
+        return;
+    }
+
+    if (!characters || characters.length === 0) {
+        charsGrid.innerHTML = '<p style="color: #aaaaaa;">Hozircha personajlar yo\'q.</p>';
+        return;
+    }
+
+    charsGrid.innerHTML = characters.map(char => `
+        <div class="character-card glass-panel" style="padding: 15px;">
+            <img src="${char.image_url || 'https://via.placeholder.com/200x150'}" alt="${char.name}" style="width: 100%; height: 140px; object-fit: cover; border-radius: 8px; margin-bottom: 10px;">
+            <h3 style="color: #ff3333; font-size: 16px; margin-bottom: 5px;">${char.name}</h3>
+            <p style="color: #cccccc; font-size: 13px;"><b>Rol:</b> ${char.role || 'Noma\'lum'}</p>
+        </div>
+    `).join('');
+}
+
+// ==================== 12. YANGILIK MODAL OYNASI ====================
 function openNewsModal(news) {
     const modal = document.getElementById('characterModal');
     const modalBody = document.getElementById('modalBody');
@@ -493,7 +551,7 @@ function openNewsModal(news) {
     modal.style.display = 'flex';
 }
 
-// ==================== 12. SAHIFA YUKLANGANDA ISHGA TUSHIRISH ====================
+// ==================== 13. SAHIFA YUKLANGANDA ISHGA TUSHIRISH ====================
 document.addEventListener('DOMContentLoaded', () => {
     loadAdminCharacters();
     renderCharacters();
@@ -501,4 +559,35 @@ document.addEventListener('DOMContentLoaded', () => {
     initNavigation();
     loadAdminNews();
     fetchNews();
+    fetchHomeNews();
+    fetchHomeCharacters();
 });
+
+async function fetchHomeCharacters() {
+  const charsGrid = document.getElementById('home-chars-grid');
+  if (!charsGrid) return;
+
+  // created_at ustuni bo'lmagani uchun order() olib tashlandi
+  const { data: characters, error } = await db
+    .from('characters')
+    .select('*')
+    .limit(4);
+
+  if (error) {
+    console.error('Personajlarni yuklashda xatolik:', error.message);
+    return;
+  }
+
+  if (!characters || characters.length === 0) {
+    charsGrid.innerHTML = '<p style="color: #aaaaaa;">Hozircha personajlar yo\'q.</p>';
+    return;
+  }
+
+  charsGrid.innerHTML = characters.map(char => `
+    <div class="character-card glass-panel" style="padding: 15px;">
+      <img src="${char.image_url || 'https://via.placeholder.com/200x150'}" alt="${char.name}" style="width: 100%; height: 140px; object-fit: cover; border-radius: 8px; margin-bottom: 10px;">
+      <h3 style="color: #ff3333; font-size: 16px; margin-bottom: 5px;">${char.name}</h3>
+      <p style="color: #cccccc; font-size: 13px;"><b>Rol:</b> ${char.role || 'Noma\'lum'}</p>
+    </div>
+  `).join('');
+}

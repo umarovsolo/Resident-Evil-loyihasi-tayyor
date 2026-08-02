@@ -411,3 +411,131 @@ body {
     display: flex;
     flex-direction: column;
 }
+
+.home-section-block {
+  margin-top: 40px;
+}
+
+.section-header h2 {
+  color: #ff3333;
+  margin-bottom: 15px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  padding-bottom: 8px;
+}
+
+.cards-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  gap: 20px;
+}
+
+.card {
+  background: rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 12px;
+  padding: 15px;
+  transition: transform 0.3s ease;
+}
+
+.card:hover {
+  transform: translateY(-5px);
+  border-color: rgba(255, 51, 51, 0.5);
+}
+
+/* Bo'limlarni yashirish va faol bo'limni ko'rsatish */
+.page-section {
+    display: none;
+}
+
+.page-section.active-section {
+    display: block;
+    animation: fadeIn 0.3s ease-in-out;
+}
+
+/* Seksiya almashganda silliq paydo bo'lish effekti */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(8px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Kartochkalar uchun Responsive Grid */
+.character-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+    gap: 20px;
+}
+
+/* Bosh sahifadagi bloklar orasi */
+.home-section-block {
+    margin-top: 35px;
+}
+
+/* Oyna effekti (Glassmorphism) */
+.glass-panel {
+    background: rgba(18, 18, 18, 0.85);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 51, 51, 0.25);
+    border-radius: 12px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+}
+
+/* Kartochkalar uchun hover effekti */
+.character-card {
+    transition: transform 0.25s ease, border-color 0.25s ease, box-shadow 0.25s ease;
+    overflow: hidden;
+}
+
+.character-card:hover {
+    transform: translateY(-6px);
+    border-color: rgba(255, 51, 51, 0.7);
+    box-shadow: 0 8px 25px rgba(255, 0, 0, 0.25);
+}
+
+/* Modal foni */
+.modal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.85);
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+    padding: 20px;
+    box-sizing: border-box;
+}
+
+/* Modal kontenti */
+.modal-content {
+    max-width: 520px;
+    width: 100%;
+    max-height: 85vh;
+    overflow-y: auto;
+    position: relative;
+    padding: 25px;
+}
+
+/* Yopish tugmasi */
+.close-btn {
+    position: absolute;
+    top: 12px;
+    right: 18px;
+    color: #ff3333;
+    font-size: 28px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: color 0.2s;
+}
+
+.close-btn:hover {
+    color: #ffffff;
+}
